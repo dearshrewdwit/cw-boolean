@@ -101,8 +101,7 @@ function init() {
 
 init();
 
-/* 
-// GPT response
+/* GPT response
 {
     "id": "chatcmpl-78ZoGjC0usfWK11BUpAN7GcXx2K2E",
     "object": "chat.completion",
