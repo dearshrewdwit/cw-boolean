@@ -6,6 +6,11 @@ const bowlMaxSlots = 3;
 const bowlSlots = document.querySelectorAll('.bowl');
 const cookBtn = document.querySelector('#cook');
 
+const modalToggle = document.querySelector('.modal-toggle');
+const recipeTitle = document.querySelector('#title');
+const recipeInstructions = document.querySelector('#instructions');
+const recipeImage = document.querySelector('#image');
+
 function addIngredient(ingredient) {
     if(bowl.length === bowlMaxSlots) {
         bowl.shift();
@@ -65,10 +70,11 @@ function createRecipe() {
             const { title, instructions } = getRecipeParts(result.choices[0].message.content);
             console.log(title, instructions);
             getRecipeImageByTitle(title, function(image) {
+                clearRecipe();
                 showRecipe(title, instructions, image);
                 isLoading(false);
                 clearInterval(randomMessageInterval);
-                emptyBowl();
+                emptyBowl();                
             });
 
 
@@ -123,8 +129,10 @@ function randomLoadingMessage() {
         'Mescolo nella ciotola...',
         'Scatto foto per Instagram...',
         'Prendo il mestolo...',
-        'Metto il grembiule',
-        'Mi lavo le mani'
+        'Metto il grembiule...',
+        'Mi lavo le mani...',
+        'Tolgo le bucce...',
+        'Pulisco il ripiano...'
     ];
     
     loadingMessage.innerText = getRandomArrayItem(messages);
@@ -142,22 +150,23 @@ function getRecipeParts(recipe) {
 }
 
 function showRecipe(title, instructions, image) {
-    const modalToggle = document.querySelector('.modal-toggle');
-    const recipeTitle = document.querySelector('#title');
-    const recipeInstructions = document.querySelector('#instructions');
-    const recipeImage = document.querySelector('#image');
-
     recipeTitle.innerText = title;
     recipeInstructions.innerText = instructions;
     recipeImage.src = image;
     modalToggle.checked = true;
 }
 
+function clearRecipe() {
+    recipeTitle.innerText = '';
+    recipeInstructions.innerText = '';
+    recipeImage.src = '';
+}
+
 function emptyBowl() {
     bowl = [];
     bowlSlots.forEach(function(el) {
         el.innerText = '?';
-    });    
+    }); 
 }
 
 function init() {
@@ -180,7 +189,7 @@ init();
     "created": 1682687918,
     "data": [
         {
-            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-OQYkzDHAGLKkApVfFFsJ2xTt/user-kXZuAH3mzmOrrv63jJtSVNPc/img-gP0hJrPB4AqMfxFCAIthO7dG.png?st=2023-04-28T12%3A18%3A38Z&se=2023-04-28T14%3A18%3A38Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-27T20%3A35%3A12Z&ske=2023-04-28T20%3A35%3A12Z&sks=b&skv=2021-08-06&sig=eSCNuCKNKBzH4%2BtlXEMDZDcdRCtd5FuqHmQoK%2BJnLw8%3D"
+            "url": "<url>"
         }
     ]
 }
