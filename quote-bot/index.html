@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote from a Bot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="h-screen">
+
+    <header>
+        <h1>Quote from a Bot</h1>
+        <p>Seleziona un personaggio e vedi<br>cosa ha da dirti!</p>
+    </header>
+    
+    <main>
+        <div class="container mx-auto">
+            <div class="characters flex flex-wrap justify-center">
+                <div class="character" data-character="Ash Ketchum">
+                    <img src="./images/ash-ketchum.png" />
+                </div>
+                <div class="character" data-character="Batman">
+                    <img src="./images/batman.png" />
+                </div>
+                <div class="character" data-character="Homer Simpson">
+                    <img src="./images/homer-simpson.png" />
+                </div>
+                <div class="character" data-character="Hermione Granger">
+                    <img src="./images/hermione-granger.png" />
+                </div>
+                <div class="character" data-character="Gandalf">
+                    <img src="./images/gandalf.png" />
+                </div>
+                <div class="character" data-character="Harley Quinn">
+                    <img src="./images/harley-quinn.png" />
+                </div>
+                <div class="character" data-character="Shrek">
+                    <img src="./images/shrek.png" />
+                </div>
+                <div class="character" data-character="Barbie">
+                    <img src="./images/barbie.png" />
+                </div>
+                <div class="character" data-character="Minion">
+                    <img src="./images/minion.png" />
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- <input type="checkbox" id="modal" class="modal-toggle" checked/> -->
+    <div class="modal modal-hidden">
+        <div class="modal-box">
+            <label for="modal" class="modal-close">
+                <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 2L2 17" stroke="#1212B2" stroke-width="3"/>
+                    <path d="M2 2L17 17" stroke="#1212B2" stroke-width="3"/>
+                </svg>                    
+            </label>
+            <h2 class="modal-title">Ash Ketchum</h2>
+            <p class="modal-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae eius vel distinctio vero, illum incidunt libero praesentium sed consequatur sapiente minus nemo sequi laboriosam ex, quidem sint, delectus exercitationem! Provident, nemo, qui facilis a id iste neque illum debitis magnam aliquam soluta ad nam modi reiciendis temporibus quod fugit corporis.</p>
+            <code class="log">Lorem ipsum dolor sit amet.</code>
+        </div>
+    </div>
+
+    <div class="loading loading-hidden">
+        <img src="./images/loader.gif" alt="loader">
+    </div>
+
+    <script src="../common/config.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -13,7 +13,14 @@
     <div class="container mx-auto max-w-sm text-center px-4">
         
         <h1 class="mb-8 text-4xl text-center font-extrabold text-yellow-500">Chat Adventure</h1>
-        
+
+        <div class="stage-container"></div>
+
+        <div class="actions-list text-center">
+            <!-- <button class="action btn">1</button>
+            <button class="action btn">2</button>
+            <button class="action btn">3</button> -->
+        </div> 
            
     </div>
 
@@ -25,6 +32,17 @@
         <div id="loading-message" class="text-2xl text-white font-semibold">Loading...</div>
     </div>
 
+    <template id="stage-tpl">
+        <div class="card bg-base-100 shadow-xl image-full">
+            <figure><img src="https://picsum.photos/600/600" alt="" /></figure>
+            <div class="card-body text-left">            
+                <p class="stage-desc mb-4"></p>
+            </div>
+        </div>
+    </template>    
+
+    <script src="../common/config.js"></script>
+    <script src="../common/utils.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
