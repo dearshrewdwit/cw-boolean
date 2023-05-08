@@ -36,7 +36,7 @@ function createRequestData(bowl, temperature) {
         messages: [
             {
                 role: 'system',
-                content: 'Sai creare ricette molto brevi, facili e con titoli creativi. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.'
+                content: 'Sai creare ricette molto brevi, facili e con titoli creativi e divertenti. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.'
             },        
             {
                 role: 'user',
