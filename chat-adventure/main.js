@@ -29,15 +29,12 @@ async function makeRequest(url, data) {
     return jsonData;
 }
 
-function renderStage(ambientazione, azioni, image) {
+function renderStage(ambientazione, azioni) {
     const stageTpl = document.querySelector('#stage-tpl');
     const stageEl = stageTpl.content.cloneNode(true);    
 
     stageEl.querySelector('.stage-desc').innerText = ambientazione;
 
-    stageEl.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;
-
-    
     if(azioni.length) {
         stageEl.querySelector('.actions-list').innerHTML = azioni
         .map(action => `<button class="action btn text-base font-mono btn-block mb-4 bg-slate-600 hover:bg-slate-800">${action}</button>`)
@@ -75,33 +72,26 @@ async function setStage() {
 
     try {        
         const {ambientazione, azioni} = JSON.parse(message.content);
-
-        const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
-            prompt: ambientazione,
-            n: 1,
-            size: '512x512',
-            response_format: 'url'
-        });
-    
-        const image = imageJSON.data[0].url;
-
-        renderStage(ambientazione, azioni, image);
-        addChatMessage(message);
+        renderStage(ambientazione, azioni/*, image*/);
         isLoading(false);
-    } catch (error) {
-        console.log(error);
 
         const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
-            prompt: `${message.content}.`,
+            prompt: `questa è una storia basata su ${genere}. ${ambientazione}`,
             n: 1,
             size: '512x512',
             response_format: 'url'
         });
     
         const image = imageJSON.data[0].url;
-
-        renderStage(message.content, [], image);
+        document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;
+        document.querySelector('.stage-image').classList.remove('invert');
+        
         addChatMessage(message);
+        
+    } catch (error) {
+        console.error(error);
+
+        document.querySelector('.stage-container').innerHTML = '<div class="font-mono text-3xl text-center font-extrabold text-slate-50">Sei morto 💀💀💀</div>';            
         isLoading(false);
     }
 }
@@ -115,11 +105,12 @@ function isLoading(state) {
     }
 }
 
+let genere; 
 function init() {
     const selectGenere = document.querySelectorAll('.select-genere');
     selectGenere.forEach(function(el) {
         el.addEventListener('click', function() {
-            const genere = el.dataset.genere;
+            genere = el.dataset.genere;
             console.log('GENERE: ', genere);
             addChatMessage({
                 role: 'system', 
