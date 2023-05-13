@@ -5,29 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emoji Chef</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-blue-900 h-screen p-4">
     
-    <div class="container mx-auto max-w-sm text-center px-4">
+    <header>
+        <h1>Emoji Chef</h1>
+        <p>Seleziona 3 emoji e crea la tua ricetta</p>
+    </header>   
+
+    <div class="container">     
         
-        <h1 class="mb-8 text-4xl text-center font-extrabold text-yellow-500">Emoji Chef</h1>
+        <div class="ingredients">
+            <div class="ingredient">🥩</div>
+            <div class="ingredient">🍅</div>
+            <div class="ingredient">🧀</div>
+            <div class="ingredient">🍆</div>
+            <div class="ingredient">🥦</div>
+            <div class="ingredient">🐟</div>
+            <div class="ingredient">🥑</div>
+            <div class="ingredient">🍗</div>
+            <div class="ingredient">🥕</div>
+            <div class="ingredient">🥬</div>
+            <div class="ingredient">🥚</div>
+            <div class="ingredient">🥔</div>
+        </div>
 
-        <ul class="flex flex-wrap justify-center gap-4 mb-12">
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🥩</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🍅</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🧀</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🍆</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🥦</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🌶️</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🧅</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🍗</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🥬</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🥕</button></li>
-            <li><button class="ingredient btn btn-square btn-lg text-4xl bg-amber-400 hover:bg-amber-600 active:bg-amber-600">🥚</button></li>
-        </ul>
+        <div class="bowl">
+            <div class="bowl-slot">?</div>
+            <div class="bowl-slot">?</div>
+            <div class="bowl-slot">?</div>
+        </div>
 
+        <!--
         <p class="text-2xl font-bold text-white mb-2">Scegli 3 ingredienti:</p>
         <div class="stats shadow w-full mb-8">
             <div class="stat place-items-center">
@@ -65,7 +75,9 @@
         </div>
         <div id="loading-message" class="text-2xl text-white font-semibold">Loading...</div>
     </div>
+    -->
 
-    <script src="main.js"></script>
+    <!-- <script src="../common/config.js"></script>
+    <script src="main.js"></script> -->
 </body>
 </html>

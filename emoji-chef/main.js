@@ -1,8 +1,3 @@
-const API_BASE_URL = 'https://api.openai.com/v1';
-const API_KEY = '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';
-
-let bowl = [];
-const bowlMaxSlots = 3;
 const bowlSlots = document.querySelectorAll('.bowl');
 const cookBtn = document.querySelector('#cook');
 
@@ -10,6 +5,48 @@ const modalToggle = document.querySelector('.modal-toggle');
 const recipeTitle = document.querySelector('#title');
 const recipeInstructions = document.querySelector('#instructions');
 const recipeImage = document.querySelector('#image');
+
+const messages = [
+    'Preparo gli ingredienti...',
+    'Scaldo i fornelli...',
+    'Mescolo nella ciotola...',
+    'Scatto foto per Instagram...',
+    'Prendo il mestolo...',
+    'Metto il grembiule...',
+    'Mi lavo le mani...',
+    'Tolgo le bucce...',
+    'Pulisco il ripiano...'
+];
+
+let bowl = [];
+const bowlMaxSlots = 3;
+
+function createRequestData(bowl, temperature) {
+    return {
+        model: _CONFIG_.GPT_MODEL,
+        messages: [
+            {
+                role: 'user',
+                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere breve, facile e con un titolo creativo e divertente. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.`
+            }
+        ],
+        temperature: temperature
+    };
+}
+
+async function makeRequest(url, data) {
+    const response = await fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${_CONFIG_.API_KEY}`,
+        },
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+
+    const jsonData = await response.json();
+    return jsonData;
+}
 
 function addIngredient(ingredient) {
     if(bowl.length === bowlMaxSlots) {
@@ -29,81 +66,33 @@ function addIngredient(ingredient) {
     }
 }
 
-
-function createRequestData(bowl, temperature) {
-    return {
-        model: 'gpt-3.5-turbo',
-        messages: [
-            {
-                role: 'system',
-                content: 'Sai creare ricette molto brevi, facili e con titoli creativi e divertenti. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.'
-            },        
-            {
-                role: 'user',
-                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}.`
-            }
-        ],
-        temperature: temperature
-    };
-}
-
-function createRecipe() {
+async function createRecipe() {
     const temperature = Math.random();
-    const reqData = createRequestData(bowl, temperature);
+    const data = createRequestData(bowl, temperature);
     let randomMessageInterval;
-
     console.log(bowl, temperature);
     
-    randomMessageInterval = randomLoadingMessage();
+    randomMessageInterval = randomLoadingMessage(messages);
     isLoading(true);
 
-    fetch(`${API_BASE_URL}/chat/completions`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`,
-            },
-            method: 'POST',
-            body: JSON.stringify(reqData)
-        })
-        .then(response => response.json())
-        .then(result => {
-            const { title, instructions } = getRecipeParts(result.choices[0].message.content);
-            console.log(title, instructions);
-            getRecipeImageByTitle(title, function(image) {
-                clearRecipe();
-                showRecipe(title, instructions, image);
-                isLoading(false);
-                clearInterval(randomMessageInterval);
-                emptyBowl();                
-            });
+    const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', data);
+    const content = result.choices[0].message.content;    
+    const { title, instructions } = getRecipeParts(content);
+    console.log(title, instructions);
 
-
-        })
-        .catch(error => console.log('error', error)); 
-}
-
-function getRecipeImageByTitle(title, cb) {
-    const reqData = {
+    const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
         prompt: `Crea una immagine per questa ricetta: ${title}`,
         n: 1,
         size: '512x512',
         response_format: 'url'
-    };
+    });
 
-    fetch(`${API_BASE_URL}/images/generations`, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`,
-        },
-        method: 'POST',
-        body: JSON.stringify(reqData)
-    })
-    .then(response => response.json())
-    .then(result => {
-        const image = result.data[0].url;
-        cb(image);
-    })
-    .catch(error => console.log('error', error)); 
+    const image = imageJSON.data[0].url;
+
+    clearRecipe();
+    showRecipe(title, instructions, image);
+    isLoading(false);
+    clearInterval(randomMessageInterval);   
 }
 
 function getRandomArrayItem(arr) {
@@ -120,21 +109,8 @@ function isLoading(state) {
     }
 }
 
-function randomLoadingMessage() {
-    const loadingMessage = document.querySelector('#loading-message');
-
-    const messages = [
-        'Preparo gli ingredienti...',
-        'Scaldo i fornelli...',
-        'Mescolo nella ciotola...',
-        'Scatto foto per Instagram...',
-        'Prendo il mestolo...',
-        'Metto il grembiule...',
-        'Mi lavo le mani...',
-        'Tolgo le bucce...',
-        'Pulisco il ripiano...'
-    ];
-    
+function randomLoadingMessage(messages) {
+    const loadingMessage = document.querySelector('#loading-message');    
     loadingMessage.innerText = getRandomArrayItem(messages);
     return setInterval(function() {
         loadingMessage.innerText = getRandomArrayItem(messages);
@@ -157,16 +133,13 @@ function showRecipe(title, instructions, image) {
 }
 
 function clearRecipe() {
-    recipeTitle.innerText = '';
-    recipeInstructions.innerText = '';
-    recipeImage.src = '';
-}
-
-function emptyBowl() {
     bowl = [];
     bowlSlots.forEach(function(el) {
         el.innerText = '?';
-    }); 
+    });     
+    recipeTitle.innerText = '';
+    recipeInstructions.innerText = '';
+    recipeImage.src = '';
 }
 
 function init() {
