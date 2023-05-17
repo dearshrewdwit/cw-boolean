@@ -1,10 +1,16 @@
-const bowlSlots = document.querySelectorAll('.bowl');
-const cookBtn = document.querySelector('#cook');
+const bowlSlots = document.querySelectorAll('.bowl-slot');
+const cookBtn = document.querySelector('.cook-btn');
 
-const modalToggle = document.querySelector('.modal-toggle');
-const recipeTitle = document.querySelector('#title');
-const recipeInstructions = document.querySelector('#instructions');
-const recipeImage = document.querySelector('#image');
+// Modal component
+const modal = document.querySelector('.modal');
+const modalContent = modal.querySelector('.modal-content');
+const modalImage = modal.querySelector('.modal-image');
+const modalTitle = modal.querySelector('.modal-title');
+const modalText = modal.querySelector('.modal-text');
+const modalClose = modal.querySelector('.modal-close');
+modalClose.addEventListener('click', function() {
+    modal.classList.add('hidden');
+});
 
 const messages = [
     'Preparo gli ingredienti...',
@@ -20,19 +26,6 @@ const messages = [
 
 let bowl = [];
 const bowlMaxSlots = 3;
-
-function createRequestData(bowl, temperature) {
-    return {
-        model: _CONFIG_.GPT_MODEL,
-        messages: [
-            {
-                role: 'user',
-                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere breve, facile e con un titolo creativo e divertente. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.`
-            }
-        ],
-        temperature: temperature
-    };
-}
 
 async function makeRequest(url, data) {
     const response = await fetch(url, {
@@ -68,17 +61,29 @@ function addIngredient(ingredient) {
 
 async function createRecipe() {
     const temperature = Math.random();
-    const data = createRequestData(bowl, temperature);
     let randomMessageInterval;
     console.log(bowl, temperature);
     
     randomMessageInterval = randomLoadingMessage(messages);
     isLoading(true);
 
-    const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', data);
+    const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', {
+        model: _CONFIG_.GPT_MODEL,
+        messages: [
+            {
+                role: 'user',
+                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere breve, facile e con un titolo creativo e divertente. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.`
+            }
+        ],
+        temperature: temperature
+    });
     const content = result.choices[0].message.content;    
     const { title, instructions } = getRecipeParts(content);
+    showRecipe(title, instructions);
     console.log(title, instructions);
+
+    isLoading(false);
+    clearInterval(randomMessageInterval);  
 
     const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
         prompt: `Crea una immagine per questa ricetta: ${title}`,
@@ -87,12 +92,10 @@ async function createRecipe() {
         response_format: 'url'
     });
 
-    const image = imageJSON.data[0].url;
+    const imageUrl = imageJSON.data[0].url;
+    modalImage.innerHTML = `<img src="${imageUrl}" alt="foto ricetta" />`
 
-    clearRecipe();
-    showRecipe(title, instructions, image);
-    isLoading(false);
-    clearInterval(randomMessageInterval);   
+    clearBowl();
 }
 
 function getRandomArrayItem(arr) {
@@ -101,7 +104,7 @@ function getRandomArrayItem(arr) {
 }
 
 function isLoading(state) {
-    const loadingScreen = document.querySelector('#loading-screen');
+    const loadingScreen = document.querySelector('.loading');
     if(state) {
         loadingScreen.classList.remove('hidden');
     } else {
@@ -110,7 +113,7 @@ function isLoading(state) {
 }
 
 function randomLoadingMessage(messages) {
-    const loadingMessage = document.querySelector('#loading-message');    
+    const loadingMessage = document.querySelector('.loading-message');    
     loadingMessage.innerText = getRandomArrayItem(messages);
     return setInterval(function() {
         loadingMessage.innerText = getRandomArrayItem(messages);
@@ -125,21 +128,17 @@ function getRecipeParts(recipe) {
     }
 }
 
-function showRecipe(title, instructions, image) {
-    recipeTitle.innerText = title;
-    recipeInstructions.innerText = instructions;
-    recipeImage.src = image;
-    modalToggle.checked = true;
+function showRecipe(title, instructions) {
+    modalTitle.innerText = title;
+    modalText.innerText = instructions;
+    modal.classList.remove('hidden');
 }
 
-function clearRecipe() {
+function clearBowl() {
     bowl = [];
     bowlSlots.forEach(function(el) {
         el.innerText = '?';
     });     
-    recipeTitle.innerText = '';
-    recipeInstructions.innerText = '';
-    recipeImage.src = '';
 }
 
 function init() {

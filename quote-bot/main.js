@@ -7,19 +7,20 @@ const defaultActions = [
     'scrivere la tua bio di linkedin'
 ];
 
+// Modal component
 const modal = document.querySelector('.modal');
-const modalTitle = modal.querySelector('.modal-title');
 const modalContent = modal.querySelector('.modal-content');
+const modalTitle = modal.querySelector('.modal-title');
+const modalText = modal.querySelector('.modal-text');
 const modalClose = modal.querySelector('.modal-close');
 modalClose.addEventListener('click', function() {
-    modal.classList.add('modal-hidden');
+    modal.classList.add('hidden');
 });
+
 
 async function playCharacter(character) {
     const action = getRandomArrayItem(defaultActions);
     const temperature = Math.random();
-    const data = createRequestData(character, action, temperature);
-
     isLoading(true);
 
     const response = await fetch(_CONFIG_.API_BASE_URL + '/chat/completions', {
@@ -28,30 +29,26 @@ async function playCharacter(character) {
             'Authorization': `Bearer ${_CONFIG_.API_KEY}`,
         },
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+            model: _CONFIG_.GPT_MODEL,
+            messages: [
+                {
+                    role: 'user',
+                    content: `Sei ${character} e devi ${action} in un massimo di 100 caratteri senza uscire mai dal personaggio`
+                },
+            ],
+            temperature: temperature
+        })
     })
 
     const jsonData = await response.json();
-    modalTitle.innerHTML = character;
-    modalContent.innerText = jsonData.choices[0].message.content;
-    modal.classList.remove('modal-hidden');
+    modalTitle.innerText = character;
+    modalText.innerText = jsonData.choices[0].message.content;
+    modal.classList.remove('hidden');
 
     isLoading(false);
     logInfo(`Character: ${character}, Action: ${action}, Temperature: ${temperature.toFixed(2)}`);
 }
-
-function createRequestData(character, action, temperature) {
-    return {
-        model: _CONFIG_.GPT_MODEL,
-        messages: [
-            {
-                role: 'user',
-                content: `Sei ${character} e devi ${action} in un massimo di 100 caratteri senza uscire mai dal personaggio`
-            },
-        ],
-        temperature: temperature
-    };
-} 
 
 function getRandomArrayItem(arr) {
     const randIdx = Math.floor(Math.random() * arr.length);
@@ -61,9 +58,9 @@ function getRandomArrayItem(arr) {
 function isLoading(state) {
     const loading = document.querySelector('.loading');
     if(state) {
-        loading.classList.remove('loading-hidden');
+        loading.classList.remove('hidden');
     } else {
-        loading.classList.add('loading-hidden');
+        loading.classList.add('hidden');
     }
 }
 
