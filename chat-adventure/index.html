@@ -10,62 +10,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body class="game-start">
     
     <header>
         <h1>ChatVenture</h1>
-        <!-- <p>Ciao GIOCATORE, benvenuto nel gioco d'avventura testuale in cui la storia è inventata da GPT :)</p> -->
+        <p>Ciao GIOCATORE, benvenuto nel gioco d'avventura testuale in cui la storia è inventata da GPT :)</p>
     </header>   
 
     <div class="container">
 
         <div class="stage-container">
-            <!--  
-            <div class="stage">
-                <div class="stage-image">
-                    <img src="https://picsum.photos/600" alt="">
-                    <img class="w-40" src="./images/loading-bar.gif" alt="">                   
-                </div>
-                <p class="stage-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem iure, laborum doloribus nam sit labore voluptatibus repellat aspernatur cumque ipsa unde eaque ullam provident quidem magni, dicta architecto sunt dolorem qui quaerat expedita, soluta quasi at. Sunt blanditiis magni, pariatur iure, repellat tempore adipisci facere voluptates, et illo vitae dolores.</p>
-            </div>  
-            -->
-            <div class="actions-list">
-                <button>Azione 1</button>
-                <button>Azione 1</button>
-                <button>Azione 1</button>
+            <div class="box">
+                <div class="box-logo">☠️</div>
+                <h2>Sei morto</h2>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum, sequi.</p>
+                <button>Rigioca</button>
             </div>
-
-            <!--  
-            <div class="genres">
-                <div class="genre" data-genere="horror">👻</div>
-                <div class="genre" data-genere="film di spionaggio">🕵🏻‍♂️</div>            
-                <div class="genre" data-genere="supereroi marvel">🦸🏻</div>
-            </div>
-            -->
         </div> 
-                        
-        <!-- 
 
-        <div id="loading-screen" class="hidden flex flex-col justify-center items-center h-36" role="status">
-            <svg aria-hidden="true" class="w-16 h-16 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-slate-50" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
-            <div id="loading-message" class="text-2xl text-white font-mono font-semibold">Elaboro...</div>
+        <div class="loading hidden">
+            <img src="./images/loader.gif" alt="" srcset="">
         </div>
 
-
-         -->
+        <div class="genres hidden">
+            <div class="genre" data-genere="horror">👻</div>
+            <div class="genre" data-genere="film di spionaggio">🕵🏻‍♂️</div>            
+            <div class="genre" data-genere="supereroi marvel">🦸🏻</div>
+        </div>
     </div>
 
     <template id="stage-tpl">
-        <div class="card font-mono text-left text-slate-50 card-compact bg-gray-800 shadow-xl mb-8">
-            <figure class="stage-image object-cover bg-white h-64 invert">
-                <!-- <img src="https://picsum.photos/600" alt=""> -->
-                <img class="w-40" src="./images/loading-bar.gif" alt="">      
-            </figure>
-            <div class="card-body">
-                <p class="stage-desc text-base"></p>
+        <div class="stage">
+            <div class="stage-image">
+                <img src="https://picsum.photos/600" alt="">                
             </div>
-        </div>  
-        <div class="actions-list"></div>               
+            <p class="stage-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem iure, laborum doloribus nam sit labore voluptatibus repellat aspernatur cumque ipsa unde eaque ullam provident quidem magni, dicta architecto sunt dolorem qui quaerat expedita, soluta quasi at. Sunt blanditiis magni, pariatur iure, repellat tempore adipisci facere voluptates, et illo vitae dolores.</p>
+        </div>   
+        <div class="actions-list">
+            <button>Azione 1</button>
+            <button>Azione 2</button>
+            <button>Azione 3</button>
+        </div>               
     </template>    
 
     <script src="../config.js"></script>
