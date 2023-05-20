@@ -9,7 +9,6 @@ const defaultActions = [
 
 // Modal component
 const modal = document.querySelector('.modal');
-const modalContent = modal.querySelector('.modal-content');
 const modalTitle = modal.querySelector('.modal-title');
 const modalText = modal.querySelector('.modal-text');
 const modalClose = modal.querySelector('.modal-close');

@@ -3,7 +3,6 @@ const cookBtn = document.querySelector('.cook-btn');
 
 // Modal component
 const modal = document.querySelector('.modal');
-const modalContent = modal.querySelector('.modal-content');
 const modalImage = modal.querySelector('.modal-image');
 const modalTitle = modal.querySelector('.modal-title');
 const modalText = modal.querySelector('.modal-text');
@@ -12,20 +11,8 @@ modalClose.addEventListener('click', function() {
     modal.classList.add('hidden');
 });
 
-const messages = [
-    'Preparo gli ingredienti...',
-    'Scaldo i fornelli...',
-    'Mescolo nella ciotola...',
-    'Scatto foto per Instagram...',
-    'Prendo il mestolo...',
-    'Metto il grembiule...',
-    'Mi lavo le mani...',
-    'Tolgo le bucce...',
-    'Pulisco il ripiano...'
-];
-
 let bowl = [];
-const bowlMaxSlots = 3;
+const bowlMaxSlots = bowlSlots.length;
 
 async function makeRequest(url, data) {
     const response = await fetch(url, {
@@ -47,12 +34,10 @@ function addIngredient(ingredient) {
     }
     
     bowl.push(ingredient);
-
-    for(let i = 0; i < bowlMaxSlots; i++) {
+    bowlSlots.forEach(function(el, i) {
         const ingredient = bowl[i] || '?';
-        const bowlSlot = bowlSlots[i];
-        bowlSlot.innerText = ingredient;
-    }
+        el.innerText = ingredient;
+    });
 
     if(bowl.length === bowlMaxSlots) {
         cookBtn.classList.remove('hidden');
@@ -64,7 +49,7 @@ async function createRecipe() {
     let randomMessageInterval;
     console.log(bowl, temperature);
     
-    randomMessageInterval = randomLoadingMessage(messages);
+    randomMessageInterval = randomLoadingMessage();
     isLoading(true);
 
     const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', {
@@ -72,21 +57,23 @@ async function createRecipe() {
         messages: [
             {
                 role: 'user',
-                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere breve, facile e con un titolo creativo e divertente. Scrivi il titolo tra la stringa *** senza usare spazi prima e dopo.`
+                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere facile e con un titolo creativo e divertente. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"titolo": "Titolo ricetta", "ingredienti": "1 uovo e 1 pomodoro", "istruzioni": "mescola gli ingredienti e metti in forno"}###`
             }
         ],
-        temperature: temperature
+        temperature: 0.7
     });
-    const content = result.choices[0].message.content;    
-    const { title, instructions } = getRecipeParts(content);
-    showRecipe(title, instructions);
-    console.log(title, instructions);
+
+    const content = JSON.parse(result.choices[0].message.content);
+    const titolo = content.titolo;
+    const ingredienti = content.ingredienti;
+    const istruzioni = content.istruzioni;
+    showRecipe(titolo, ingredienti, istruzioni);
 
     isLoading(false);
     clearInterval(randomMessageInterval);  
 
     const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
-        prompt: `Crea una immagine per questa ricetta: ${title}`,
+        prompt: `Crea una immagine per questa ricetta: ${titolo}`,
         n: 1,
         size: '512x512',
         response_format: 'url'
@@ -98,11 +85,6 @@ async function createRecipe() {
     clearBowl();
 }
 
-function getRandomArrayItem(arr) {
-    const randIdx = Math.floor(Math.random() * arr.length);
-    return arr[randIdx];
-}
-
 function isLoading(state) {
     const loadingScreen = document.querySelector('.loading');
     if(state) {
@@ -112,25 +94,34 @@ function isLoading(state) {
     }
 }
 
-function randomLoadingMessage(messages) {
-    const loadingMessage = document.querySelector('.loading-message');    
-    loadingMessage.innerText = getRandomArrayItem(messages);
+function randomLoadingMessage() {     
+    const messages = [
+        'Preparo gli ingredienti...',
+        'Scaldo i fornelli...',
+        'Mescolo nella ciotola...',
+        'Scatto foto per Instagram...',
+        'Prendo il mestolo...',
+        'Metto il grembiule...',
+        'Mi lavo le mani...',
+        'Tolgo le bucce...',
+        'Pulisco il ripiano...'
+    ];
+    
+    const loadingMessage = document.querySelector('.loading-message'); 
+    loadingMessage.innerText = messages[0];
+
     return setInterval(function() {
-        loadingMessage.innerText = getRandomArrayItem(messages);
+        const randIdx = Math.floor(Math.random() * messages.length);
+        loadingMessage.innerText = messages[randIdx];
     }, 2000);
 }
 
-function getRecipeParts(recipe) {
-    const parts = recipe.split('***');
-    return {
-        title: parts[1],
-        instructions: parts[2]
-    }
-}
-
-function showRecipe(title, instructions) {
+function showRecipe(title, ingredients, instructions) {
     modalTitle.innerText = title;
-    modalText.innerText = instructions;
+    modalText.innerHTML = `
+        <p>${ingredients}</p>
+        <p>${instructions}</p>
+    `;
     modal.classList.remove('hidden');
 }
 
