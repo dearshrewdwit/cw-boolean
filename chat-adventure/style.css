@@ -97,20 +97,21 @@ main {
 }
 
 .stage {
-    /* ... */
+    position: relative;
 }
 
 .stage-image {
     background-image: url("./images/loader.gif");
     background-repeat: no-repeat;
     background-position: center;
-    min-height: 512px;
+    background-size: 30%; /* TEMP */
+    min-height: 250px;
 }
 
 .stage-desc {
     padding: 16px;
     background: linear-gradient(0deg, rgba(0,22,50,1) 59%, rgba(0,22,50,0.4150253851540616) 100%);
-    margin-top: -250px;
+    margin-top: -50px;
     position: relative;
     z-index: 5;
 }
@@ -129,7 +130,12 @@ main {
     height: 512px;
 }
 
-.box {
+/* TEMP */
+.loading img {
+    max-width: 150px;
+}
+
+.gameover {
     position: relative;
     /* width: 90%; */
     /* margin: 0 auto; */
@@ -141,11 +147,11 @@ main {
     /* animation: pop-effect 0.3s ease-out; */
 }
 
-.box-logo {
+.gameover-logo {
     font-size: 60px;
 }
 
-.box button {
+.gameover button {
     width: 100%;
 }
 
@@ -162,5 +168,9 @@ main {
 }
 
 .game-start header p {
+    display: none;
+}
+
+.game-start .genres {
     display: none;
 }

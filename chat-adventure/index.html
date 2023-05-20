@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
-<body class="game-start">
+<body>
     
     <header>
         <h1>ChatVenture</h1>
@@ -19,30 +19,23 @@
 
     <div class="container">
 
-        <div class="stage-container">
-            <div class="box">
-                <div class="box-logo">☠️</div>
-                <h2>Sei morto</h2>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Rerum, sequi.</p>
-                <button>Rigioca</button>
-            </div>
-        </div> 
+        <div class="stage-container"></div> 
 
         <div class="loading hidden">
             <img src="./images/loader.gif" alt="" srcset="">
         </div>
 
-        <div class="genres hidden">
-            <div class="genre" data-genere="horror">👻</div>
-            <div class="genre" data-genere="film di spionaggio">🕵🏻‍♂️</div>            
-            <div class="genre" data-genere="supereroi marvel">🦸🏻</div>
+        <div class="genres">
+            <div class="genre" data-genre="horror">👻</div>
+            <div class="genre" data-genre="film di spionaggio">🕵🏻‍♂️</div>            
+            <div class="genre" data-genre="supereroi marvel">🦸🏻</div>
         </div>
     </div>
 
     <template id="stage-tpl">
         <div class="stage">
             <div class="stage-image">
-                <img src="https://picsum.photos/600" alt="">                
+                <!-- <img src="https://picsum.photos/600" alt="">                 -->
             </div>
             <p class="stage-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem iure, laborum doloribus nam sit labore voluptatibus repellat aspernatur cumque ipsa unde eaque ullam provident quidem magni, dicta architecto sunt dolorem qui quaerat expedita, soluta quasi at. Sunt blanditiis magni, pariatur iure, repellat tempore adipisci facere voluptates, et illo vitae dolores.</p>
         </div>   
@@ -52,6 +45,15 @@
             <button>Azione 3</button>
         </div>               
     </template>    
+
+    <template id="gameover-tpl">
+        <div class="gameover">
+            <div class="gameover-logo">☠️</div>
+            <h2>Sei morto</h2>
+            <p class="gameover-message"></p>
+            <button>Rigioca</button>
+        </div>
+    </template>
 
     <script src="../config.js"></script>
     <script src="main.js"></script>
