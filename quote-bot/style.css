@@ -100,26 +100,24 @@ main {
 
 .modal {
     position: fixed; 
-    overscroll-behavior: contain;   
     top: 0;
     left: 0;
-    padding-top: 48px;
-    padding-bottom: 48px;
     z-index: 999;
     height: 100%;
+    width: 100%;
+    padding: 24px;
     background-color: rgba(161, 210, 255, 0.8);
     overflow-y: auto;
 }
 
 .modal-box {
     position: relative;
-    width: 85%;
+    width: 100%;
     max-width: 512px;
-    margin: 0 auto;
-    overscroll-behavior: contain;   
+    margin: 24px auto;
     background-color: #ffffff; 
-    animation: pop-effect 0.3s ease-out;
     border: 2px solid #1212b2;
+    animation: pop-effect 0.3s ease-out;
 }
 
 .modal-content {

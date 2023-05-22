@@ -104,8 +104,8 @@ main {
     background-image: url("./images/loader.gif");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 30%; /* TEMP */
-    min-height: 250px;
+    background-size: 20%; /* TEMP */
+    min-height: 300px;
 }
 
 .stage-desc {
