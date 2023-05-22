@@ -1,19 +1,22 @@
-const bowlSlots = document.querySelectorAll('.bowl-slot');
-const cookBtn = document.querySelector('.cook-btn');
+// Loading component
+const loading = document.querySelector('.loading');
 
 // Modal component
 const modal = document.querySelector('.modal');
 const modalImage = modal.querySelector('.modal-image');
-const modalTitle = modal.querySelector('.modal-title');
-const modalText = modal.querySelector('.modal-text');
+const modalContent = modal.querySelector('.modal-content');
 const modalClose = modal.querySelector('.modal-close');
 modalClose.addEventListener('click', function() {
     modal.classList.add('hidden');
 });
 
+const bowlSlots = document.querySelectorAll('.bowl-slot');
+const cookBtn = document.querySelector('.cook-btn');
+
 let bowl = [];
 const bowlMaxSlots = bowlSlots.length;
 
+// Generalizzare la funzione di request
 async function makeRequest(url, data) {
     const response = await fetch(url, {
         headers: {
@@ -50,7 +53,7 @@ async function createRecipe() {
     console.log(bowl, temperature);
     
     randomMessageInterval = randomLoadingMessage();
-    isLoading(true);
+    loading.classList.remove('hidden');
 
     const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', {
         model: _CONFIG_.GPT_MODEL,
@@ -64,16 +67,19 @@ async function createRecipe() {
     });
 
     const content = JSON.parse(result.choices[0].message.content);
-    const titolo = content.titolo;
-    const ingredienti = content.ingredienti;
-    const istruzioni = content.istruzioni;
-    showRecipe(titolo, ingredienti, istruzioni);
 
-    isLoading(false);
+    modalContent.innerHTML = `
+        <h2>${content.titolo}</h2>
+        <p>${content.ingredienti}</p>
+        <p>${content.istruzioni}</p>
+    `;
+
+    modal.classList.remove('hidden');
+    loading.classList.add('hidden');
     clearInterval(randomMessageInterval);  
 
     const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
-        prompt: `Crea una immagine per questa ricetta: ${titolo}`,
+        prompt: `Crea una immagine per questa ricetta: ${content.titolo}`,
         n: 1,
         size: '512x512',
         response_format: 'url'
@@ -81,17 +87,7 @@ async function createRecipe() {
 
     const imageUrl = imageJSON.data[0].url;
     modalImage.innerHTML = `<img src="${imageUrl}" alt="foto ricetta" />`
-
     clearBowl();
-}
-
-function isLoading(state) {
-    const loadingScreen = document.querySelector('.loading');
-    if(state) {
-        loadingScreen.classList.remove('hidden');
-    } else {
-        loadingScreen.classList.add('hidden');
-    }
 }
 
 function randomLoadingMessage() {     
@@ -109,20 +105,10 @@ function randomLoadingMessage() {
     
     const loadingMessage = document.querySelector('.loading-message'); 
     loadingMessage.innerText = messages[0];
-
     return setInterval(function() {
         const randIdx = Math.floor(Math.random() * messages.length);
         loadingMessage.innerText = messages[randIdx];
     }, 2000);
-}
-
-function showRecipe(title, ingredients, instructions) {
-    modalTitle.innerText = title;
-    modalText.innerHTML = `
-        <p>${ingredients}</p>
-        <p>${instructions}</p>
-    `;
-    modal.classList.remove('hidden');
 }
 
 function clearBowl() {

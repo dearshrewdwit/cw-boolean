@@ -13,6 +13,10 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 
+body {
+    /* ... */
+}
+
 h1 {
     margin-bottom: 8px;
     font-size: 35px;
@@ -25,7 +29,9 @@ h2 {
     font-weight: 700;
 }
 
-p {margin-bottom: 16px;}
+p {
+    margin-bottom: 16px;
+}
 
 header {
     background-color: #E9F45B;
@@ -38,7 +44,7 @@ main {
 }
 
 .container {
-    max-width: 640px;
+    max-width: 540px;
     margin: 0 auto;
 }
 
@@ -111,8 +117,7 @@ main {
     max-width: 512px;
     margin: 0 auto;
     overscroll-behavior: contain;   
-    background-color: #ffffff;
-    box-shadow: 0 25px 50px -12px #00000040;    
+    background-color: #ffffff; 
     animation: pop-effect 0.3s ease-out;
     border: 2px solid #1212b2;
 }
@@ -135,14 +140,10 @@ main {
     border-radius: 50%;
 }
 
-.log {
+.modal-content > code {
     display: block;
     font-size: 10px;
     color: #6885e0;
-}
-
-.modal-box > .log {
-    margin-bottom: -12px;
 }
 
 .hidden {

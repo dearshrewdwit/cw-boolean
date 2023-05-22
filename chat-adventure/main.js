@@ -1,6 +1,7 @@
 const stageContainer = document.querySelector('.stage-container');
 
 const gptChat = [];
+let genre;
 
 function addChatMessage(message) {
     gptChat.push(message);
@@ -42,14 +43,10 @@ function renderStage(ambientazione, azioni) {
     actions.forEach(function(el) {
         el.addEventListener('click', function() {
             const action = el.innerText;
-            console.log(action);
-
-            const message = {
+            addChatMessage({
                 role: 'user',
                 content: action
-            };
-
-            addChatMessage(message);
+            });
             setStage();
         });
     });
@@ -74,7 +71,6 @@ async function setStage() {
         addChatMessage(message);
         isLoading(false);
         
-        /* 
         const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
             prompt: `questa è una storia basata su ${genre}. ${ambientazione}`,
             n: 1,
@@ -83,8 +79,7 @@ async function setStage() {
         });
     
         const image = imageJSON.data[0].url;
-        document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;             
-        */
+        document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;
     } catch (error) {
         console.error(error);
         gameover(error);
@@ -104,31 +99,28 @@ function isLoading(state) {
 function gameover(message) {
     const gameoverTpl = document.querySelector('#gameover-tpl');
     const gameoverHTML = gameoverTpl.content.cloneNode(true);
-    if(message) {
-        gameoverHTML.querySelector('.gameover-message').innerText = message;
-    }    
+    gameoverHTML.querySelector('.gameover-message').innerText = message;
     stageContainer.appendChild(gameoverHTML);
 }
 
-let genre; 
+function startGame(genre) {
+    console.log('GENRE: ', genre);
+    document.body.classList.add('game-start');
+    addChatMessage({
+        role: 'system', 
+        content: `Voglio che ti comporti come se fossi un classico gioco di avventura testuale. Io sarò il protagonista e giocatore principale. Non fare riferimento a te stesso. L\'ambientazione di questo gioco sarà a tema ${genre}. Ogni ambientazione ha una descrizione di 150 caratteri seguita da una array di 3 azioni possibili che il giocatore può compiere. Una di queste azioni conduce il giocatore alla morte, il gioco termina immediatamente. Non chiedere mai di ricominciare il gioco. Non aggiungere mai altre spiegazioni. Le tue risposte sono solo in formato JSON. Non scrivere altro testo che non sia in formato JSON. Questo è il modello di risposta: {"ambientazione":"descrizione ambientazione","azioni":["azione 1", "azione 2", "azione 3"]}`
+    });
+    
+    setStage();
+}
+
 function init() {
     const genres = document.querySelectorAll('.genre');
     genres.forEach(function(el) {
         el.addEventListener('click', function() {
-            document.body.classList.add('game-start');
-            genre = el.dataset.genre;
-            console.log('GENRE: ', genre);
-            
-            addChatMessage({
-                role: 'system', 
-                content: `Voglio che ti comporti come se fossi un classico gioco di avventura testuale. Io sarò il protagonista e giocatore principale. Non fare riferimento a te stesso. L\'ambientazione di questo gioco sarà a tema ${genre}. Ogni ambientazione ha una descrizione di 150 caratteri seguita da una array di 3 azioni possibili che il giocatore può compiere. Una di queste azioni conduce il giocatore alla morte, il gioco termina immediatamente. Non chiedere mai di ricominciare il gioco. Non aggiungere mai altre spiegazioni. Le tue risposte sono solo in formato JSON. Non scrivere altro testo che non sia in formato JSON. Questo è il modello di risposta: {"ambientazione":"descrizione ambientazione","azioni":["azione 1", "azione 2", "azione 3"]}`
-            });
-            
-            setStage();
+            startGame(el.innerText);
         });
     });
 }
-
-
 
 init();
