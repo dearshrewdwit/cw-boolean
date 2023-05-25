@@ -4,7 +4,10 @@ const gptChat = [];
 let genre;
 
 function addChatMessage(message) {
-    gptChat.push(message);
+    gptChat.push({
+        role: 'user',
+        content: `${message}. Se questa azione è mortale l'elenco delle azioni è vuoto. Non dare altro testo che non sia un oggetto JSON. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"ambientazione": "sei morto per questa motivazione", "azioni": []}###`
+    });
 }
 
 async function makeRequest(url, data) {
@@ -21,56 +24,49 @@ async function makeRequest(url, data) {
     return jsonData;
 }
 
-function renderStage(ambientazione, azioni) {
-    const stageTpl = document.querySelector('#stage-tpl');
-    const stageEl = stageTpl.content.cloneNode(true);    
-    stageEl.querySelector('.stage-desc').innerText = ambientazione;
-
-    if(!azioni.length) {        
-        gameover(ambientazione);
-        return;
-    }
-
+function renderActions(actions) {
     let actionsHTML = '';
-    azioni.forEach(function(azione) {
-        actionsHTML += `<button class="action">${azione}</button>`;
+    actions.forEach(function(action) {
+        actionsHTML += `<button>${action}</button>`;
     });
 
-    stageEl.querySelector('.actions-list').innerHTML = actionsHTML;
-    stageContainer.appendChild(stageEl);
+    document.querySelector('.stage-actions').innerHTML = actionsHTML;
 
-    const actions = document.querySelectorAll('.action');
-    actions.forEach(function(el) {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(function(el) {
         el.addEventListener('click', function() {
             const action = el.innerText;
-            addChatMessage({
-                role: 'user',
-                content: action
-            });
+            addChatMessage(action);
             setStage();
         });
     });
 }
 
 async function setStage() {
-
     stageContainer.innerHTML = "";
     isLoading(true);
-
+    console.log(gptChat);
     const chatJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', {
         model: _CONFIG_.GPT_MODEL,
         messages: gptChat,
-        temperature: 0.6
+        temperature: 0.7
     });
 
+    // Todo: try...catch
     const message = chatJSON.choices[0].message;
+    const content = JSON.parse(message.content);
+    console.log(content);
+    const {ambientazione, azioni} = content;
 
-    try {        
-        const {ambientazione, azioni} = JSON.parse(message.content);
-        renderStage(ambientazione, azioni);
-        addChatMessage(message);
-        isLoading(false);
-        
+    isLoading(false);
+
+    if(azioni.length) {        
+        const stageTpl = document.querySelector('#stage-tpl');
+        const stageEl = stageTpl.content.cloneNode(true);   
+        stageEl.querySelector('.stage-desc').innerText = ambientazione;
+        stageContainer.appendChild(stageEl);
+        gptChat.push(message);
+
         const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
             prompt: `questa è una storia basata su ${genre}. ${ambientazione}`,
             n: 1,
@@ -79,11 +75,10 @@ async function setStage() {
         });
     
         const image = imageJSON.data[0].url;
+        renderActions(azioni);
         document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;
-    } catch (error) {
-        console.error(error);
-        gameover(error);
-        isLoading(false);
+    } else {
+        gameover(ambientazione);
     }
 }
 
@@ -100,17 +95,19 @@ function gameover(message) {
     const gameoverTpl = document.querySelector('#gameover-tpl');
     const gameoverHTML = gameoverTpl.content.cloneNode(true);
     gameoverHTML.querySelector('.gameover-message').innerText = message;
+    gameoverHTML.querySelector('button').addEventListener('click', function() {
+        window.location.reload();
+    })
     stageContainer.appendChild(gameoverHTML);
 }
 
 function startGame(genre) {
     console.log('GENRE: ', genre);
     document.body.classList.add('game-start');
-    addChatMessage({
+    gptChat.push({
         role: 'system', 
-        content: `Voglio che ti comporti come se fossi un classico gioco di avventura testuale. Io sarò il protagonista e giocatore principale. Non fare riferimento a te stesso. L\'ambientazione di questo gioco sarà a tema ${genre}. Ogni ambientazione ha una descrizione di 150 caratteri seguita da una array di 3 azioni possibili che il giocatore può compiere. Una di queste azioni conduce il giocatore alla morte, il gioco termina immediatamente. Non chiedere mai di ricominciare il gioco. Non aggiungere mai altre spiegazioni. Le tue risposte sono solo in formato JSON. Non scrivere altro testo che non sia in formato JSON. Questo è il modello di risposta: {"ambientazione":"descrizione ambientazione","azioni":["azione 1", "azione 2", "azione 3"]}`
+        content: `Voglio che ti comporti come se fossi un classico gioco di avventura testuale. Io sarò il protagonista e giocatore principale. Non fare riferimento a te stesso. L\'ambientazione di questo gioco sarà a tema ${genre}. Ogni ambientazione ha una descrizione di 150 caratteri seguita da una array di 3 azioni possibili che il giocatore può compiere. Una di queste azioni è mortale e termina il gioco. Non aggiungere mai altre spiegazioni. Non fare riferimento a te stesso. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"ambientazione":"descrizione ambientazione","azioni":["azione 1", "azione 2", "azione 3"]}###`
     });
-    
     setStage();
 }
 

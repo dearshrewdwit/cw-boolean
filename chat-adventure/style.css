@@ -97,6 +97,10 @@ main {
 }
 
 .stage {
+    /* ... */
+}
+
+.stage-set {
     position: relative;
 }
 
@@ -116,7 +120,7 @@ main {
     z-index: 5;
 }
 
-.actions-list {
+.stage-actions {
     display: flex;
     flex-direction: column;
     gap: 8px;
