@@ -155,7 +155,7 @@ main {
     height: 100%;
     width: 100%;
     padding: 24px;
-    background-color: rgba(161, 210, 255, 0.8);
+    background-color: rgb(255 170 251 / 85%);
     overflow-y: auto;
     overscroll-behavior: contain;   
 }

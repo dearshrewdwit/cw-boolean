@@ -17,8 +17,8 @@ let bowl = [];
 const bowlMaxSlots = bowlSlots.length;
 
 // Generalizzare la funzione di request
-async function makeRequest(url, data) {
-    const response = await fetch(url, {
+async function makeRequest(endpoint, data) {
+    const response = await fetch(_CONFIG_.API_BASE_URL + endpoint, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${_CONFIG_.API_KEY}`,
@@ -32,13 +32,19 @@ async function makeRequest(url, data) {
 }
 
 function addIngredient(ingredient) {
-    if(bowl.length === bowlMaxSlots) {
+    if (bowl.length === bowlMaxSlots) {
         bowl.shift();
     }
     
     bowl.push(ingredient);
+    
     bowlSlots.forEach(function(el, i) {
-        const ingredient = bowl[i] || '?';
+        let ingredient = '?';
+        
+        if (bowl[i]) {
+            ingredient = bowl[i];
+        } 
+
         el.innerText = ingredient;
     });
 
@@ -48,14 +54,11 @@ function addIngredient(ingredient) {
 }
 
 async function createRecipe() {
-    const temperature = Math.random();
     let randomMessageInterval;
-    console.log(bowl, temperature);
-    
     randomMessageInterval = randomLoadingMessage();
     loading.classList.remove('hidden');
 
-    const result = await makeRequest(_CONFIG_.API_BASE_URL + '/chat/completions', {
+    const result = await makeRequest('/chat/completions', {
         model: _CONFIG_.GPT_MODEL,
         messages: [
             {
@@ -78,7 +81,7 @@ async function createRecipe() {
     loading.classList.add('hidden');
     clearInterval(randomMessageInterval);  
 
-    const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
+    const imageJSON = await makeRequest('/images/generations', {
         prompt: `Crea una immagine per questa ricetta: ${content.titolo}`,
         n: 1,
         size: '512x512',
@@ -88,6 +91,13 @@ async function createRecipe() {
     const imageUrl = imageJSON.data[0].url;
     modalImage.innerHTML = `<img src="${imageUrl}" alt="foto ricetta" />`
     clearBowl();
+}
+
+function clearBowl() {
+    bowl = [];
+    bowlSlots.forEach(function(el) {
+        el.innerText = '?';
+    });     
 }
 
 function randomLoadingMessage() {     
@@ -111,20 +121,11 @@ function randomLoadingMessage() {
     }, 2000);
 }
 
-function clearBowl() {
-    bowl = [];
-    bowlSlots.forEach(function(el) {
-        el.innerText = '?';
-    });     
-}
-
 function init() {
     const ingredients = document.querySelectorAll('.ingredient');
     ingredients.forEach((el) => {
         el.addEventListener('click', function() {
-            const ingredient = el.innerText;
-            console.log(ingredient);
-            addIngredient(ingredient);
+            addIngredient(el.innerText);
         });
     });
 
