@@ -115,7 +115,7 @@ function init() {
     const genres = document.querySelectorAll('.genre');
     genres.forEach(function(el) {
         el.addEventListener('click', function() {
-            startGame(el.innerText);
+            startGame(el.dataset.genre);
         });
     });
 }

@@ -135,10 +135,10 @@ main {
     align-items: center;
     position: fixed;
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
     z-index: 999;
-    height: 100vh;
-    width: 100vw;
     background-color: rgb(255 170 251 / 85%);
 }
 
@@ -150,10 +150,10 @@ main {
 .modal {
     position: fixed; 
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
     z-index: 999;
-    height: 100%;
-    width: 100%;
     padding: 24px;
     background-color: rgb(255 170 251 / 85%);
     overflow-y: auto;
