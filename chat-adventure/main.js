@@ -6,7 +6,8 @@ let genre;
 function addChatMessage(message) {
     gptChat.push({
         role: 'user',
-        content: `${message}. Se questa azione è mortale l'elenco delle azioni è vuoto. Non dare altro testo che non sia un oggetto JSON. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"ambientazione": "sei morto per questa motivazione", "azioni": []}###`
+        content: `${message}. If this action is fatal the action list is empty. Don't give any text other than a JSON object. Your responses are only in JSON format like this example:\n\n###\n\n {"setting": "
+you died for this reason", "actions": []}###`
     });
 }
 
@@ -56,29 +57,29 @@ async function setStage() {
     const message = chatJSON.choices[0].message;
     const content = JSON.parse(message.content);
     console.log(content);
-    const {ambientazione, azioni} = content;
+    const {setting, actions} = content;
 
     isLoading(false);
 
-    if(azioni.length) {        
+    if(actions.length) {
         const stageTpl = document.querySelector('#stage-tpl');
-        const stageEl = stageTpl.content.cloneNode(true);   
-        stageEl.querySelector('.stage-desc').innerText = ambientazione;
+        const stageEl = stageTpl.content.cloneNode(true);
+        stageEl.querySelector('.stage-desc').innerText = setting;
         stageContainer.appendChild(stageEl);
         gptChat.push(message);
 
         const imageJSON = await makeRequest(_CONFIG_.API_BASE_URL + '/images/generations', {
-            prompt: `questa è una storia basata su ${genre}. ${ambientazione}`,
+            prompt: `this is a story based on ${genre}. ${setting}`,
             n: 1,
             size: '512x512',
             response_format: 'url'
         });
-    
+
         const image = imageJSON.data[0].url;
-        renderActions(azioni);
-        document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${ambientazione}" />`;
+        renderActions(actions);
+        document.querySelector('.stage-image').innerHTML = `<img src="${image}" alt="${setting}" />`;
     } else {
-        gameover(ambientazione);
+        gameover(setting);
     }
 }
 
@@ -105,8 +106,9 @@ function startGame(genre) {
     console.log('GENRE: ', genre);
     document.body.classList.add('game-start');
     gptChat.push({
-        role: 'system', 
-        content: `Voglio che ti comporti come se fossi un classico gioco di avventura testuale. Io sarò il protagonista e giocatore principale. Non fare riferimento a te stesso. L\'ambientazione di questo gioco sarà a tema ${genre}. Ogni ambientazione ha una descrizione di 150 caratteri seguita da una array di 3 azioni possibili che il giocatore può compiere. Una di queste azioni è mortale e termina il gioco. Non aggiungere mai altre spiegazioni. Non fare riferimento a te stesso. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"ambientazione":"descrizione ambientazione","azioni":["azione 1", "azione 2", "azione 3"]}###`
+        role: 'system',
+        content: `
+I want you to play like a classic text adventure game. I will be the protagonist and main player. Don't refer to yourself. The setting of this game will have a theme of ${genre}. Each setting has a description of 150 characters followed by an array of 3 possible actions that the player can perform. One of these actions is fatal and ends the game. Never add other explanations. Don't refer to yourself. Your responses are just in JSON format like this example:\n\n###\n\n {"setting":"setting description","actions":["action 1", "action 2", "action 3"]}###`
     });
     setStage();
 }

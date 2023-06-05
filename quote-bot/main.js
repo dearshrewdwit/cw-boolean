@@ -25,7 +25,7 @@ async function playCharacter(character) {
             messages: [
                 {
                     role: 'user',
-                    content: `Sei ${character} e devi ${action} in un massimo di 100 caratteri senza uscire mai dal personaggio`
+                    content: `You are ${character} and should ${action} in a maximum of 100 characters without breaking character`
                 },
             ],
             temperature: temperature
@@ -47,12 +47,12 @@ async function playCharacter(character) {
 
 function getRandomAction() {
     const actions = [
-        'salutare nel tuo modo più iconico',
-        'dare un consiglio di stile in base ai tuoi gusti',
-        'raccontare la tua ultima avventura',
-        'svelarmi i tuoi sogni',
-        'dirmi chi è il tuo migliore amico',
-        'scrivere la tua bio di linkedin'
+      'say hello in your most iconic way',
+      'give fashion advice based on your tastes',
+      'share a summary of your last epic adventure',
+      'reveal your hopes and dreams to me',
+      'tell me who is your best friend',
+      'write your linkedin bio'
     ];
 
     const randIdx = Math.floor(Math.random() * actions.length);

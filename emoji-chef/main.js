@@ -63,7 +63,7 @@ async function createRecipe() {
         messages: [
             {
                 role: 'user',
-                content: `Create a recipe with these ingredients: ${bowl.join(', ')}. The recipe should be easy and with a creative and fun title. Your replies should be in JSON format like htis example :\n\n###\n\n {"title": "Recipe title", "ingredients": "1 egg\n1 tomato", "instructions": "mix the ingredients and put in the oven"}###`
+                content: `Create a recipe with these ingredients: ${bowl.join(', ')}. The recipe should be easy and with a creative and fun title. Your replies should be in JSON format like this example :\n\n###\n\n {"title": "Recipe title", "ingredients": "1 egg\n1 tomato", "instructions": "mix the ingredients and put in the oven"}###`
             }
         ],
         temperature: 0.7
