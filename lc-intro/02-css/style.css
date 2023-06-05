@@ -50,7 +50,7 @@ main {
 
 .hero {
     height: 320px;
-    background-image: url("./images/cover-bg.jpg");
+    background-image: url("./images/cover-bg.png");
     background-size: cover;
     background-position: center;
     text-align: center;
@@ -72,16 +72,17 @@ main {
 
 .card {
     display: flex;
-    /* border: 1px solid #e6e6e6; */
+    /* flex-wrap: wrap; */
 }
 
 .card-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* flex: 1 1 auto; */
 }
 
 .card-content {
+    /* flex: 2 1 400px; */
     padding: 16px;
 }
 
@@ -99,24 +100,5 @@ footer p {
 
 .highlight {
     background-color: #ffb703;
-}
-
-.author {
-    font-size: 24px;
-}
-
-.author-name {
-    color: #fb8500;
-    font-weight: bold;
-}
-
-.date {
-    /* ... */
-}
-
-.caption {
-    font-size: 12px;
-    color: gray;
-    font-style: italic;
 }
 
