@@ -5,3 +5,4 @@ packages
 dist/package-lock.json
 src/package-lock.json
 config.js
+._*

@@ -16,7 +16,7 @@ const cookBtn = document.querySelector('.cook-btn');
 let bowl = [];
 const bowlMaxSlots = bowlSlots.length;
 
-// Generalizzare la funzione di request
+// abstracted function to make a HTTP request
 async function makeRequest(endpoint, data) {
     const response = await fetch(_CONFIG_.API_BASE_URL + endpoint, {
         headers: {
@@ -35,15 +35,15 @@ function addIngredient(ingredient) {
     if (bowl.length === bowlMaxSlots) {
         bowl.shift();
     }
-    
+
     bowl.push(ingredient);
-    
+
     bowlSlots.forEach(function(el, i) {
         let ingredient = '?';
-        
+
         if (bowl[i]) {
             ingredient = bowl[i];
-        } 
+        }
 
         el.innerText = ingredient;
     });
@@ -63,7 +63,7 @@ async function createRecipe() {
         messages: [
             {
                 role: 'user',
-                content: `Crea una ricetta con questi ingredienti: ${bowl.join(', ')}. La ricetta deve essere facile e con un titolo creativo e divertente. Le tue risposte sono solo in formato JSON come questo esempio:\n\n###\n\n {"titolo": "Titolo ricetta", "ingredienti": "1 uovo e 1 pomodoro", "istruzioni": "mescola gli ingredienti e metti in forno"}###`
+                content: `Create a recipe with these ingredients: ${bowl.join(', ')}. The recipe should be easy and with a creative and fun title. Your replies should be in JSON format like htis example :\n\n###\n\n {"title": "Recipe title", "ingredients": "1 egg\n1 tomato", "instructions": "mix the ingredients and put in the oven"}###`
             }
         ],
         temperature: 0.7
@@ -72,24 +72,24 @@ async function createRecipe() {
     const content = JSON.parse(result.choices[0].message.content);
 
     modalContent.innerHTML = `
-        <h2>${content.titolo}</h2>
-        <p>${content.ingredienti}</p>
-        <p>${content.istruzioni}</p>
+        <h2>${content.title}</h2>
+        <p>${content.ingredients}</p>
+        <p>${content.instructions}</p>
     `;
 
     modal.classList.remove('hidden');
     loading.classList.add('hidden');
-    clearInterval(randomMessageInterval);  
+    clearInterval(randomMessageInterval);
 
     const imageJSON = await makeRequest('/images/generations', {
-        prompt: `Crea una immagine per questa ricetta: ${content.titolo}`,
+        prompt: `Create an image for this recipe: ${content.title}`,
         n: 1,
         size: '512x512',
         response_format: 'url'
     });
 
     const imageUrl = imageJSON.data[0].url;
-    modalImage.innerHTML = `<img src="${imageUrl}" alt="foto ricetta" />`
+    modalImage.innerHTML = `<img src="${imageUrl}" alt="recipe photo" />`
     clearBowl();
 }
 
@@ -97,23 +97,23 @@ function clearBowl() {
     bowl = [];
     bowlSlots.forEach(function(el) {
         el.innerText = '?';
-    });     
+    });
 }
 
-function randomLoadingMessage() {     
+function randomLoadingMessage() {
     const messages = [
-        'Preparo gli ingredienti...',
-        'Scaldo i fornelli...',
-        'Mescolo nella ciotola...',
-        'Scatto foto per Instagram...',
-        'Prendo il mestolo...',
-        'Metto il grembiule...',
-        'Mi lavo le mani...',
-        'Tolgo le bucce...',
-        'Pulisco il ripiano...'
+        'Prepping the ingredients...',
+        'Stove is heating up...',
+        'Stirring ingredients in a bowl...',
+        'Taking photos for Instagram...',
+        'Choosing a ladle...',
+        'Putting on a fancy apron...',
+        'Washing my hands thoroughly...',
+        'Peeling potatoes...',
+        'Cleaning the countertop...'
     ];
-    
-    const loadingMessage = document.querySelector('.loading-message'); 
+
+    const loadingMessage = document.querySelector('.loading-message');
     loadingMessage.innerText = messages[0];
     return setInterval(function() {
         const randIdx = Math.floor(Math.random() * messages.length);
